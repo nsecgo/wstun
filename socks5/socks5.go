@@ -35,7 +35,7 @@ func (a ReqAddr) String() string {
 		port = strconv.Itoa((int(a[n-2]) << 8) | int(a[n-1]))
 	case ATYPIPv4:
 		host = net.IP(a[1 : 1+net.IPv4len]).String()
-		port = strconv.Itoa((int(a[n-2]) << 8) | int(a[n]-1))
+		port = strconv.Itoa((int(a[n-2]) << 8) | int(a[n-1]))
 	case ATYPIPv6:
 		host = net.IP(a[1 : 1+net.IPv6len]).String()
 		port = strconv.Itoa((int(a[n-2]) << 8) | int(a[n-1]))
@@ -197,11 +197,11 @@ func Handshake(rw io.ReadWriter) (ReqAddr, byte) {
 		return nil, 0
 	}
 	/*
-		    +----+-----+-------+------+----------+----------+
-	        |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
-	        +----+-----+-------+------+----------+----------+
-	        | 1  |  1  | X'00' |  1   | Variable |    2     |
-	        +----+-----+-------+------+----------+----------+
+			    +----+-----+-------+------+----------+----------+
+		        |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
+		        +----+-----+-------+------+----------+----------+
+		        | 1  |  1  | X'00' |  1   | Variable |    2     |
+		        +----+-----+-------+------+----------+----------+
 	*/
 	switch cmd {
 	case CmdConnect:
