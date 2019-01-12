@@ -13,7 +13,7 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var url = flag.String("url", "wss://gg.gg/password", "webSocket server url")
-	var addr = flag.String("l", "127.0.0.1:1080", "listen address")
+	var l = flag.String("l", "127.0.0.1:1080", "listen address")
 	flag.Parse()
 	createSession := func() *smux.Session {
 		session, err := createSessionBaseWs(*url)
@@ -25,11 +25,11 @@ func main() {
 	}
 	session := createSession()
 
-	tcpLn, err := net.Listen("tcp", *addr)
+	tcpLn, err := net.Listen("tcp", *l)
 	if err != nil {
 		log.Fatal("[ERROR] listen:", err)
 	}
-	log.Println("listen on ", *addr)
+	log.Println("listen on ", *l)
 
 	for {
 		lConn, err := tcpLn.Accept()

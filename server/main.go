@@ -18,6 +18,7 @@ func main() {
 	var addr = flag.String("l", ":443", "listen address")
 	var certFile = flag.String("cert", "cert.pem", "cert file")
 	var keyFile = flag.String("key", "key.pem", "key file")
+	var fileServPath = flag.String("fp", "", "file server path")
 	flag.Parse()
 
 	var upgrader = websocket.Upgrader{} // use default options
@@ -50,8 +51,7 @@ func main() {
 			}
 			c, err := net.Dial("tcp", addr.String())
 			if err != nil {
-				myLog.Println("real server dial:", err)
-				stream.Close()
+				myLog.Println("real server dial:", err, "[Closing stream]", stream.Close())
 				continue
 			}
 			go func() {
@@ -62,5 +62,8 @@ func main() {
 			}()
 		}
 	})
+	if *fileServPath != "" {
+		http.Handle(*fileServPath, http.StripPrefix(*fileServPath, http.FileServer(http.Dir(*fileServPath))))
+	}
 	log.Fatal(http.ListenAndServeTLS(*addr, *certFile, *keyFile, nil))
 }

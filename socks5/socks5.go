@@ -1,7 +1,6 @@
 package socks5
 
 import (
-	"bytes"
 	"io"
 	"net"
 	"strconv"
@@ -162,7 +161,7 @@ func Handshake(rw io.ReadWriter) (ReqAddr, byte) {
 		+----+----------+----------+
 	*/
 	n, err := rw.Read(buf)
-	if err != nil || n != 3 || !bytes.Equal(buf[:3], []byte{5, 1, 0}) {
+	if err != nil {
 		return nil, 0
 	}
 	/*
@@ -197,11 +196,11 @@ func Handshake(rw io.ReadWriter) (ReqAddr, byte) {
 		return nil, 0
 	}
 	/*
-			    +----+-----+-------+------+----------+----------+
-		        |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
-		        +----+-----+-------+------+----------+----------+
-		        | 1  |  1  | X'00' |  1   | Variable |    2     |
-		        +----+-----+-------+------+----------+----------+
+		+----+-----+-------+------+----------+----------+
+		|VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
+		+----+-----+-------+------+----------+----------+
+		| 1  |  1  | X'00' |  1   | Variable |    2     |
+		+----+-----+-------+------+----------+----------+
 	*/
 	switch cmd {
 	case CmdConnect:
