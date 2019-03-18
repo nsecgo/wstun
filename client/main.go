@@ -41,22 +41,24 @@ func main() {
 			lConn.Close()
 			continue
 		}
-	openStream:
-		stream, err := session.OpenStream()
-		if err != nil {
-			log.Println("[ERROR] openStream:", err)
-			if session.IsClosed() {
-				session = createSession()
-				goto openStream
-			} else {
-				lConn.Close()
-				continue
-			}
-		}
 		go func() {
-			defer lConn.Close()
-			defer stream.Close()
+		openStream:
+			stream, err := session.OpenStream()
+			if err != nil {
+				log.Println("[ERROR] openStream:", err)
+				if session.IsClosed() {
+					session = createSession()
+					goto openStream
+				} else {
+					lConn.Close()
+					return
+				}
+			}
 
+			defer func() {
+				lConn.Close()
+				stream.Close()
+			}()
 			if cmd == socks5.CmdConnect {
 				_, err = stream.Write(reqAddr)
 				if err != nil {

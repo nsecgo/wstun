@@ -1,0 +1,6 @@
+github.com/gorilla/websocket v1.4.1-0.20190306004257-0ec3d1bd7fe5 h1:cLS9qwFWZrZdPiVVz9fk0FzhXbsENc8zqiUKcWrGFtk=
+github.com/gorilla/websocket v1.4.1-0.20190306004257-0ec3d1bd7fe5/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
+github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
+github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/xtaci/smux v1.1.1 h1:ZyIo9XHuHkAeENzHR8yGWC+6xUSCTeP2tPTRE8mnLvc=
+github.com/xtaci/smux v1.1.1/go.mod h1:f+nYm6SpuHMy/SH0zpbvAFHT1QoMcgLOsWcFip5KfPw=

@@ -6,6 +6,7 @@ import (
 	"github.com/nsecgo/wstun/socks5"
 	"github.com/xtaci/smux"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -18,14 +19,13 @@ func main() {
 	var addr = flag.String("l", ":443", "listen address")
 	var certFile = flag.String("cert", "cert.pem", "cert file")
 	var keyFile = flag.String("key", "key.pem", "key file")
-	var fileServPath = flag.String("fp", "", "file server path")
+	var fileServerPath = flag.String("fp", "", "file server path")
 	flag.Parse()
 
-	var upgrader = websocket.Upgrader{} // use default options
+	var upgrade = websocket.Upgrader{} // use default options
 	http.HandleFunc("/"+*pwd, func(w http.ResponseWriter, r *http.Request) {
-		wc, err := upgrader.Upgrade(w, r, nil)
+		wc, err := upgrade.Upgrade(w, r, nil)
 		if err != nil {
-			log.Println("upgrade:", err)
 			return
 		}
 		defer wc.Close()
@@ -49,21 +49,24 @@ func main() {
 				stream.Close()
 				continue
 			}
-			c, err := net.Dial("tcp", addr.String())
-			if err != nil {
-				myLog.Println("real server dial:", err, "[Closing stream]", stream.Close())
-				continue
-			}
 			go func() {
-				defer stream.Close()
-				defer c.Close()
+				c, err := net.Dial("tcp", addr.String())
+				if err != nil {
+					myLog.Println("real server dial:", err, "[Closing stream]", stream.Close())
+					return
+				}
+				defer func() {
+					stream.Close()
+					c.Close()
+				}()
 				go io.Copy(stream, c)
 				io.Copy(c, stream)
 			}()
 		}
 	})
-	if *fileServPath != "" {
-		http.Handle(*fileServPath, http.StripPrefix(*fileServPath, http.FileServer(http.Dir(*fileServPath))))
+	if *fileServerPath != "" {
+		http.Handle("/files/", http.StripPrefix("/files/", http.FileServer(http.Dir(*fileServerPath))))
 	}
-	log.Fatal(http.ListenAndServeTLS(*addr, *certFile, *keyFile, nil))
+	server := http.Server{Addr: *addr, ErrorLog: log.New(ioutil.Discard, "", log.LstdFlags)}
+	log.Fatal(server.ListenAndServeTLS(*certFile, *keyFile))
 }
