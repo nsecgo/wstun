@@ -17,8 +17,8 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var pwd = flag.String("pwd", "password", "password")
 	var addr = flag.String("l", ":443", "listen address")
-	var certFile = flag.String("cert", "cert.pem", "cert file")
-	var keyFile = flag.String("key", "key.pem", "key file")
+	var certFile = flag.String("cert", "", "cert file")
+	var keyFile = flag.String("key", "", "key file")
 	var fileServerPath = flag.String("fp", "", "file server path")
 	flag.Parse()
 
@@ -68,5 +68,9 @@ func main() {
 		http.Handle("/files/", http.StripPrefix("/files/", http.FileServer(http.Dir(*fileServerPath))))
 	}
 	server := http.Server{Addr: *addr, ErrorLog: log.New(ioutil.Discard, "", log.LstdFlags)}
-	log.Fatal(server.ListenAndServeTLS(*certFile, *keyFile))
+	if *certFile == "" {
+		log.Fatal(server.ListenAndServe())
+	} else {
+		log.Fatal(server.ListenAndServeTLS(*certFile, *keyFile))
+	}
 }

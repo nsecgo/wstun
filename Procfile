@@ -1,0 +1,1 @@
+web: server -l :$PORT -pwd $PASSWORD
