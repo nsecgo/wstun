@@ -41,20 +41,19 @@ func main() {
 			lConn.Close()
 			continue
 		}
-		go func() {
-		openStream:
-			stream, err := session.OpenStream()
-			if err != nil {
-				log.Println("[ERROR] openStream:", err)
-				if session.IsClosed() {
-					session = createSession()
-					goto openStream
-				} else {
-					lConn.Close()
-					return
-				}
+	openStream:
+		stream, err := session.OpenStream()
+		if err != nil {
+			log.Println("[ERROR] openStream:", err)
+			if session.IsClosed() {
+				session = createSession()
+				goto openStream
+			} else {
+				lConn.Close()
+				continue
 			}
-
+		}
+		go func() {
 			defer func() {
 				lConn.Close()
 				stream.Close()
