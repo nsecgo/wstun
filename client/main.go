@@ -14,7 +14,15 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var url = flag.String("url", "wss://gg.gg/password", "webSocket server url")
 	var l = flag.String("l", "127.0.0.1:1080", "listen address")
+	var ipv4 = flag.Bool("4", false, "ipv4 only")
 	flag.Parse()
+
+	if *ipv4 {
+		websocket.DefaultDialer.NetDial = func(network, addr string) (conn net.Conn, e error) {
+			return net.Dial("tcp4", addr)
+		}
+	}
+
 	createSession := func() *smux.Session {
 		session, err := createSessionBaseWs(*url)
 		if err != nil {
