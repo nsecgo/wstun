@@ -1,0 +1,47 @@
+{
+    "log": {
+        "loglevel": "error"
+    },
+    "transport": {
+        "quicSettings": {
+            "security": "none",
+            "header": {
+                "type": "none"
+            }
+        },
+        "wsSettings": {
+            "path": "/password"
+        },
+        "kcpSettings": {
+            "mtu": 1424,
+            "uplinkCapacity": 5,
+            "downlinkCapacity": 100,
+            "congestion": false,
+            "header": {
+                "type": "none"
+            }
+        }
+    },
+    "inbounds": [
+        {
+            "port": 123456,
+            "protocol": "vmess",
+            "streamSettings": {
+                "network": "ws"
+            },
+            "settings": {
+                "clients": [
+                    {
+                        "alterId": 1,
+                        "id": "uuid"
+                    }
+                ]
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom"
+        }
+    ]
+}
